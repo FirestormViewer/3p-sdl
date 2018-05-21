@@ -36,16 +36,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>13de93ea11544051b69f238eeb644fd3</string>
+              <string>83ae55031f81dace9dcf688cc5510010</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/882/1946/libpng-1.6.8.500873-linux64-500873.tar.bz2</string>
+              <string>http://192.168.1.115/dev/pkg/libpng-1.6.8.180841558-linux64-180841558.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux64</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.6.8.297051</string>
+        <string>1.6.8.180841558</string>
       </map>
       <key>zlib</key>
       <map>
@@ -80,16 +80,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>dab6be8b0596c1e3354f2b6d41335131</string>
+              <string>15a645809cb2f14074f22e7848bb42cf</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/866/1898/zlib-1.2.8.500857-linux64-500857.tar.bz2</string>
+              <string>http://192.168.1.115/dev/pkg/zlib-1.2.8.180841547-linux64-180841547.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux64</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.2.8.296881</string>
+        <string>1.2.8.180841547</string>
       </map>
     </map>
     <key>package_description</key>
@@ -129,7 +129,7 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>include/SDL/*</string>
+            <string>include/SDL2/*</string>
             <string>include/directfb/*</string>
             <string>include/directfb-internal/*</string>
             <string>docs/SDL/README.Linden</string>

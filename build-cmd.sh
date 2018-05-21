@@ -11,8 +11,8 @@ TOP="$(dirname "$0")"
 
 DIRECTFB_SOURCE_DIR="DirectFB"
 DIRECTFB_VERSION="$(sed -n -E '/%define version ([0-9.]+)/s//\1/p' "$TOP/$DIRECTFB_SOURCE_DIR/directfb.spec")"
-SDL_SOURCE_DIR="SDL"
-SDL_VERSION=$(sed -n -e 's/^Version: //p' "$TOP/$SDL_SOURCE_DIR/SDL.spec")
+SDL_SOURCE_DIR="SDL2-2.0.8"
+SDL_VERSION=$(sed -n -e 's/^Version: //p' "$TOP/$SDL_SOURCE_DIR/SDL2.spec")
 
 if [ -z "$AUTOBUILD" ] ; then 
     exit 1
@@ -100,7 +100,7 @@ case "$AUTOBUILD_PLATFORM" in
                 LIBPNG_LIBS="-lpng16 -lz -lm" \
                 ./configure --prefix="$stage" --libdir="$stage/lib/release" --includedir="$stage/include" \
                 --with-pic --enable-static --enable-shared --enable-zlib --disable-freetype
-            make V=1
+            make -j4 V=1
             make install
 
             # clean the build tree
@@ -127,7 +127,7 @@ case "$AUTOBUILD_PLATFORM" in
                 LDFLAGS="-L$stage/packages/lib/release -L$stage/lib/release $opts" \
                 ./configure --target=i686-linux-gnu --with-pic --with-video-directfb \
                 --prefix="$stage" --libdir="$stage/lib/release" --includedir="$stage/include"
-            make
+            make -j4
             make install
 
             # clean the build tree
@@ -143,7 +143,7 @@ esac
 
 
 mkdir -p "$stage/LICENSES"
-cp "$TOP/$SDL_SOURCE_DIR/COPYING" "$stage/LICENSES/SDL.txt"
+cp "$TOP/$SDL_SOURCE_DIR/COPYING.txt" "$stage/LICENSES/SDL.txt"
 mkdir -p "$stage"/docs/SDL/
 cp -a "$TOP"/README.Linden "$stage"/docs/SDL/
 echo "$SDL_VERSION" > "$stage/VERSION.txt"
