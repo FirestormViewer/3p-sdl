@@ -1,69 +1,6 @@
 <?xml version="1.0" ?>
 <llsd>
 <map>
-    <key>installables</key>
-    <map>
-      <key>libpng</key>
-      <map>
-        <key>copyright</key>
-        <string>Copyright (c) 2004, 2006-2013 Glenn Randers-Pehrson</string>
-        <key>description</key>
-        <string>PNG Reference library</string>
-        <key>license</key>
-        <string>libpng</string>
-        <key>license_file</key>
-        <string>LICENSES/libpng.txt</string>
-        <key>name</key>
-        <string>libpng</string>
-        <key>platforms</key>
-        <map>
-          <key>linux64</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>83ae55031f81dace9dcf688cc5510010</string>
-              <key>url</key>
-              <string>http://downloads.phoenixviewer.com/libpng-1.6.8.180841558-linux64-180841558.tar.bz2</string>
-            </map>
-            <key>name</key>
-            <string>linux64</string>
-          </map>
-        </map>
-        <key>version</key>
-        <string>1.6.8.180841558</string>
-      </map>
-      <key>zlib</key>
-      <map>
-        <key>copyright</key>
-        <string>Copyright (C) 1995-2013 Jean-loup Gailly and Mark Adler</string>
-        <key>description</key>
-        <string>Zlib Data Compression Library</string>
-        <key>license</key>
-        <string>zlib</string>
-        <key>license_file</key>
-        <string>LICENSES/zlib.txt</string>
-        <key>name</key>
-        <string>zlib</string>
-        <key>platforms</key>
-        <map>
-          <key>linux64</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>15a645809cb2f14074f22e7848bb42cf</string>
-              <key>url</key>
-              <string>http://192.168.1.115/dev/pkg/zlib-1.2.8.180841547-linux64-180841547.tar.bz2</string>
-            </map>
-            <key>name</key>
-            <string>linux64</string>
-          </map>
-        </map>
-        <key>version</key>
-        <string>1.2.8.180841547</string>
-      </map>
-    </map>
     <key>package_description</key>
     <map>
       <key>copyright</key>
@@ -102,8 +39,6 @@
           <key>manifest</key>
           <array>
             <string>include/SDL2/*</string>
-            <string>include/directfb/*</string>
-            <string>include/directfb-internal/*</string>
             <string>docs/SDL/README.Linden</string>
           </array>
           <key>name</key>

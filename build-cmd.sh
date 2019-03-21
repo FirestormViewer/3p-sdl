@@ -9,9 +9,7 @@ set -u
 
 TOP="$(dirname "$0")"
 
-DIRECTFB_SOURCE_DIR="DirectFB"
-DIRECTFB_VERSION="$(sed -n -E '/%define version ([0-9.]+)/s//\1/p' "$TOP/$DIRECTFB_SOURCE_DIR/directfb.spec")"
-SDL_SOURCE_DIR="SDL2-2.0.8"
+SDL_SOURCE_DIR="SDL2-2.0.9"
 SDL_VERSION=$(sed -n -e 's/^Version: //p' "$TOP/$SDL_SOURCE_DIR/SDL2.spec")
 
 if [ -z "$AUTOBUILD" ] ; then 
@@ -23,45 +21,15 @@ if [ "$OSTYPE" = "cygwin" ] ; then
 fi
 
 stage="$(pwd)"
-ZLIB_INCLUDE="${stage}"/packages/include/zlib
-PNG_INCLUDE="${stage}"/packages/include/libpng16
-
-[ -f "$ZLIB_INCLUDE"/zlib.h ] || fail "You haven't installed the zlib package yet."
-[ -f "$PNG_INCLUDE"/png.h ] || fail "You haven't installed the libpng package yet."
 
 # load autobuild provided shell functions and variables
 source_environment_tempfile="$stage/source_environment.sh"
 "$AUTOBUILD" source_environment > "$source_environment_tempfile"
 . "$source_environment_tempfile"
 
-# Restore all .sos
-restore_sos ()
-{
-    for solib in "${stage}"/packages/lib/release/lib*.so*.disable; do 
-        if [ -f "$solib" ]; then
-            mv -f "$solib" "${solib%.disable}"
-        fi
-    done
-}
-
 case "$AUTOBUILD_PLATFORM" in
 
     linux64)
-        # Linux build environment at Linden comes pre-polluted with stuff that can
-        # seriously damage 3rd-party builds.  Environmental garbage you can expect
-        # includes:
-        #
-        #    DISTCC_POTENTIAL_HOSTS     arch           root        CXXFLAGS
-        #    DISTCC_LOCATION            top            branch      CC
-        #    DISTCC_HOSTS               build_name     suffix      CXX
-        #    LSDISTCC_ARGS              repo           prefix      CFLAGS
-        #    cxx_version                AUTOBUILD      SIGN        CPPFLAGS
-        #
-        # So, clear out bits that shouldn't affect our configure-directed build
-        # but which do nonetheless.
-        #
-        # unset DISTCC_HOSTS CC CXX CFLAGS CPPFLAGS CXXFLAGS
-
         # Default target per autobuild --address-size
         opts="${TARGET_OPTS:--m$AUTOBUILD_ADDRSIZE $LL_BUILD_RELEASE}"
 
@@ -74,58 +42,11 @@ case "$AUTOBUILD_PLATFORM" in
             export CPPFLAGS="$TARGET_CPPFLAGS"
         fi
             
-        # Force static linkage to libz by moving .sos out of the way
-        # (Libz is only packaging statics right now but keep this working.)
-        trap restore_sos EXIT
-        for solib in "${stage}"/packages/lib/release/libz.so*; do
-            if [ -f "$solib" ]; then
-                mv -f "$solib" "$solib".disable
-            fi
-        done
-
-        # DirectFB first.  There's a potential circular dependency in that
-        # DirectFB can use SDL but that doesn't arise in our case.
-        # Prevent .sos from re-exporting libz or libpng (which they
-        # have done in the past).  Boost the various *FLAGS settings
-        # so package includes are found and probed, not system libraries.
-        # Similarly, pick up packages libraries.
-
-        pushd "$TOP/$DIRECTFB_SOURCE_DIR"
-            # do release build of directfb  
-            CFLAGS="-I$ZLIB_INCLUDE $opts" \
-                CXXFLAGS="-I$ZLIB_INCLUDE $opts" \
-                CPPFLAGS="${CPPFLAGS:-} -I$ZLIB_INCLUDE -I$PNG_INCLUDE" \
-                LDFLAGS="-Wl,--exclude-libs,libz:libpng16 -L$stage/packages/lib/release $opts" \
-                LIBPNG_CFLAGS="-I$PNG_INCLUDE" \
-                LIBPNG_LIBS="-lpng16 -lz -lm" \
-                ./configure --prefix="$stage" --libdir="$stage/lib/release" --includedir="$stage/include" \
-                --with-pic --enable-static --enable-shared --enable-zlib --disable-freetype
-            make -j4 V=1
-            make install
-
-            # clean the build tree
-            # Would like to do this but this deletes files that are generated
-            # by 'fluxcomp' and we don't have that installed anywhere so don't
-            # scrub between builds.
-            # make distclean
-        popd
-
-        # SDL built last and using DirectFB as a 'package'.
-        # With 1.2.15, configure needs to find the directfb-config program built
-        # above.  If it doesn't find it, it will disable directfb support (though
-        # this may be okay in practice).  We achieve that with PATH setting.
-        # Otherwise, *FLAGS boosted to find package includes including directfb,
-        # same for libraries though directfb-config will send the debug SDL build
-        # into the release DirectFB staging area.
-
         pushd "$TOP/$SDL_SOURCE_DIR"
             # do release build of sdl
-            PATH="$stage/bin/:$PATH" \
-                CFLAGS="-I$ZLIB_INCLUDE -I$PNG_INCLUDE -I$stage/include/directfb/ $opts" \
-                CXXFLAGS="-I$ZLIB_INCLUDE -I$PNG_INCLUDE -I$stage/include/directfb/ $opts" \
-                CPPFLAGS="-I$ZLIB_INCLUDE -I$PNG_INCLUDE -I$stage/include/directfb/ $opts" \
-                LDFLAGS="-L$stage/packages/lib/release -L$stage/lib/release $opts" \
-                ./configure --target=i686-linux-gnu --with-pic --with-video-directfb \
+              CFLAGS="$opts" CXXFLAGS="$opts" CPPFLAGS="$opts" \
+              LDFLAGS="-L$stage/packages/lib/release -L$stage/lib/release $opts" \
+                ./configure --with-pic \
                 --prefix="$stage" --libdir="$stage/lib/release" --includedir="$stage/include"
             make -j4
             make install
@@ -140,7 +61,6 @@ case "$AUTOBUILD_PLATFORM" in
         exit -1
     ;;
 esac
-
 
 mkdir -p "$stage/LICENSES"
 cp "$TOP/$SDL_SOURCE_DIR/COPYING.txt" "$stage/LICENSES/SDL.txt"
