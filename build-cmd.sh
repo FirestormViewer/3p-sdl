@@ -41,7 +41,7 @@ case "$AUTOBUILD_PLATFORM" in
             # Incorporate special pre-processing flags
             export CPPFLAGS="$TARGET_CPPFLAGS"
         fi
-            
+
         pushd "$TOP/$SDL_SOURCE_DIR"
             # do release build of sdl
               CFLAGS="$opts" CXXFLAGS="$opts" CPPFLAGS="$opts" \
@@ -63,7 +63,7 @@ case "$AUTOBUILD_PLATFORM" in
 esac
 
 mkdir -p "$stage/LICENSES"
-cp "$TOP/$SDL_SOURCE_DIR/COPYING.txt" "$stage/LICENSES/SDL.txt"
+cp "$TOP/$SDL_SOURCE_DIR/LICENSE.txt" "$stage/LICENSES/SDL.txt"
 mkdir -p "$stage"/docs/SDL/
 cp -a "$TOP"/README.Linden "$stage"/docs/SDL/
 echo "$SDL_VERSION" > "$stage/VERSION.txt"
