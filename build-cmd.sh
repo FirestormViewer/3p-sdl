@@ -9,7 +9,7 @@ set -u
 
 TOP="$(dirname "$0")"
 
-SDL_SOURCE_DIR="SDL2-2.24.0"
+SDL_SOURCE_DIR="SDL2-2.0.20"
 SDL_VERSION=$(sed -n -e 's/^Version: //p' "$TOP/$SDL_SOURCE_DIR/SDL2.spec")
 
 if [ -z "$AUTOBUILD" ] ; then 
