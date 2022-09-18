@@ -12,7 +12,7 @@
       <key>license_file</key>
       <string>LICENSES/SDL.txt</string>
       <key>name</key>
-      <string>SDL</string>
+      <string>SDL2</string>
       <key>platforms</key>
       <map>
         <key>common</key>
