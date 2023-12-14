@@ -45,6 +45,11 @@ case "$AUTOBUILD_PLATFORM" in
         pushd "$TOP/$SDL_SOURCE_DIR"
             # do release build of sdl
               CFLAGS="$opts" CXXFLAGS="$opts" CPPFLAGS="$opts" \
+	      #Dumb - $LL_BUILD_RELEASE contains c++ standard flags which are meaningful to the c++
+	      #compiler only, SDL is written in C and polluting CFLAGS with that nonsense just makes
+	      #the compiler spew out a whole load of noise, so lets strip that junk out from CFLAGS
+	      CFLAGS=$(echo "$CFLAGS" | sed 's/-std=c++[0-9][0-9]*//')
+
               LDFLAGS="-L$stage/packages/lib/release -L$stage/lib/release $opts" \
                 ./configure --with-pic \
                 --prefix="$stage" --libdir="$stage/lib/release" --includedir="$stage/include"
